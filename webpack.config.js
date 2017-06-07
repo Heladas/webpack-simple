@@ -1,15 +1,25 @@
 var webpack = require('webpack')
 var path = require('path')
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var isProduction = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === "production")
 
-// function resolve (dir) {
-//     return path.join(__dirname, '..', dir)
-// }
+// extract css to dedicated file in production
+var extractSass = new ExtractTextPlugin({
+    // filename: "[name].[contenthash].css",
+    filename: "[name].css",
+    // disable: !isProduction
+    disable: false
+});
 
 module.exports = {
-    entry: './src/app.js',
+    entry: {
+        app: [
+            './src/app.js',
+            './src/sass/main.scss',
+        ]
+    },
     output: {
-        filename: 'bundle.js',
+        filename: '[name].js',
         path: path.resolve(__dirname, './dist')
     },
     module: {
@@ -19,13 +29,24 @@ module.exports = {
                 exclude: /(node_modules|bower_components)/,
                 use: {
                     loader: 'babel-loader',
-                    options: {presets: ['es2015']},
-
+                    options: {presets: ['es2015']}
                 }
+            },
+            {
+                test: /\.scss$/,
+                exclude: /(node_modules|bower_components)/,
+                use: extractSass.extract({
+                    use: ["css-loader", "sass-loader"],
+                    // use style-loader in development
+                    // fallback: "style-loader"
+                })
             }
         ]
     },
-    plugins: []
+    plugins: [
+        extractSass
+    ],
+    watch: true
 }
 
 if(isProduction){
