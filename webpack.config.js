@@ -1,12 +1,13 @@
-var webpack = require('webpack')
-var path = require('path')
-var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var isProduction = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === "production")
+const webpack = require('webpack');
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+const isProduction = (process.env.NODE_ENV && process.env.NODE_ENV.trim() === 'production');
 
 // extract css to dedicated file in production
-var extractSass = new ExtractTextPlugin({
+const extractSass = new ExtractTextPlugin({
     // filename: "[name].[contenthash].css",
-    filename: "[name].css",
+    filename: '[name].css',
     // disable: !isProduction
     disable: false
 });
@@ -15,7 +16,7 @@ module.exports = {
     entry: {
         app: [
             './src/app.js',
-            './src/sass/main.scss',
+            './src/sass/main.scss'
         ]
     },
     output: {
@@ -29,14 +30,14 @@ module.exports = {
                 exclude: /(node_modules|bower_components)/,
                 use: {
                     loader: 'babel-loader',
-                    options: {presets: ['es2015']}
+                    options: { presets: ['es2015'] }
                 }
             },
             {
                 test: /\.scss$/,
                 exclude: /(node_modules|bower_components)/,
                 use: extractSass.extract({
-                    use: ["css-loader", "sass-loader"],
+                    use: ['css-loader', 'sass-loader']
                     // use style-loader in development
                     // fallback: "style-loader"
                 })
@@ -47,10 +48,13 @@ module.exports = {
         extractSass
     ],
     watch: true
-}
+};
 
-if(isProduction){
+if (isProduction) {
     module.exports.plugins.push(
-        new webpack.optimize.UglifyJsPlugin()
-    )
+        new webpack.optimize.UglifyJsPlugin({
+            compress: isProduction,
+            sourceMap: isProduction
+        })
+    );
 }

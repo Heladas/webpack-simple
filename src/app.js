@@ -1,9 +1,12 @@
-import Chart from './charts'
-import {Map} from './map'
+import Chart from './charts';
+import { Map } from './map';
 
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOM loaded")
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded');
 
-    new Chart()
-    new Map()
+    const chart = new Chart();
+    const map = new Map();
+
+    console.log(chart);
+    console.log(map);
 });
